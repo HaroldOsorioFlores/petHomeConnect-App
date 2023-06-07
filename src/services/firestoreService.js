@@ -1,10 +1,11 @@
-import { collection, addDoc } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
+import { storage } from "./firebaseConfig";
+import uuid from 'react-native-uuid';
+export const uploadFile = async (file) => {
+  const storageRef = ref(storage, uuid.v4());
 
-export const petsCollection = async (pets) => {
-  try {
-    const docRef = await addDoc(collection(db, "pets"), pets);
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
+  // 'file' comes from the Blob or File API
+  uploadBytes(storageRef, file).then((snapshot) => {
+    console.log("Uploaded a blob or file!");
+  });
 };
