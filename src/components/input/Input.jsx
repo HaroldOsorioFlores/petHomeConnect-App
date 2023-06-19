@@ -8,7 +8,7 @@ const Input = ({ name, changeText }) => {
         placeholder={name}
         style={styles.input}
         placeholderTextColor="#f85f6a"
-        onChangeText={(text) => changeText(text)}
+        onChangeText={ changeText}
         secureTextEntry={
           name === "Contraseña" || name === "Confirmar contraseña"
         } // Establece secureTextEntry según el nombre
