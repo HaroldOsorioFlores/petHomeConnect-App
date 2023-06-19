@@ -8,7 +8,8 @@ const Button = ({ navigation, nav, name, handPress }) => {
         name === "Ingresar" ||
         name === "Registrarse" ||
         name === "Selecciona una imagen" ||
-        name === "Subir imagen"
+        name === "Subir imagen" ||
+        name === "Subir mascota"
           ? handPress
           : () => navigation.navigate(nav)
       }

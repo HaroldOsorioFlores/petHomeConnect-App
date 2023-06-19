@@ -1,10 +1,13 @@
-import React from "react";
-import { View, Text, ScrollView, SafeAreaView } from "react-native";
-import { Input } from "../../components";
-import ImagePickerPet from "../../components/imagePicker/ImagePickerPet";
+import { View, Text, ScrollView, SafeAreaView, Image } from "react-native";
+import { Input, Button } from "../../components";
 import styles from "./AddPet.style";
 import { addPetsCollection } from "../../services/firebaseCollections/firebaseCollectionsPet";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import * as ImagePicker from "expo-image-picker";
+
+// nosotros
+import { uploadFile } from "../../services/firestoreService";
+
 const data = [
   {
     key: "nombre",
@@ -47,15 +50,61 @@ const data = [
 
 const AddPet = () => {
   const [sendPets, setSendPets] = useState([]);
-  const changeTextHandle = (text, name) => {
-    const newData = data.reduce((obj, item) => {
-      return { ...obj, [item.key]: item.key === name ? text : item.description };
-    }, {});
-    console.log(newData);
+  const [image, setImage] = useState(null);
+
+  const changeTextHandle = (text, itemKey) => {
+    setSendPets((prevSendPets) => {
+      const updatedSendPets = { ...prevSendPets };
+      updatedSendPets[itemKey] = text;
+      return updatedSendPets;
+    });
   };
 
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-  
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    try {
+      const url = await uploadImageFile();
+      setSendPets((prevSendPets) => {
+        return {
+          ...prevSendPets,
+          image: url,
+        };
+      });
+    } catch (error) {
+      // Manejar el error si ocurre
+      console.error("Error uploading image file:", error);
+    }
+  };
+
+  const uploadImageFile = async () => {
+    try {
+      const response = await fetch(image);
+      const blob = await response.blob();
+
+      const url = await uploadFile(blob);
+      return url;
+    } catch (error) {
+      throw new Error("Error uploading image file:", error);
+    }
+  };
+  const submitContentAll = ( )=>{
+    handleImageUpload()
+    addPetsCollection(sendPets)
+  }
+  console.log(sendPets);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container_page}>
@@ -64,11 +113,34 @@ const AddPet = () => {
           {data.map((item, index) => (
             <View key={index} style={styles.space_input}>
               <Text>{item.label}</Text>
-              <Input name={item.description} changeText={(text)=>{changeTextHandle(text,item.key)}}/>
+              <Input
+                name={item.description}
+                changeText={(text) => {
+                  changeTextHandle(text, item.key);
+                }}
+              />
             </View>
           ))}
         </View>
-        <ImagePickerPet />
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 20,
+          }}
+        >
+          <Button name="Selecciona una imagen" handPress={pickImage } />
+          <View style={styles.box_image}>
+            {image && (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 200, height: 200 }}
+              />
+            )}
+          </View>
+          <Button name="Subir mascota" handPress={submitContentAll }/>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

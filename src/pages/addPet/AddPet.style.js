@@ -5,7 +5,8 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 20,
     display: "flex",
-    padding: 20,
+    paddingHorizontal: 20,
+    marginTop: 40
   },
   container: {
     flex: 1,
@@ -30,7 +31,13 @@ const styles = StyleSheet.create({
   },
   space_input:{
     marginBottom:10
-  }
+  },
+  box_image: {
+    width: 200,
+    height: 200,
+    borderColor: "black",
+    borderWidth: 1
+  },
 });
 
 export default styles;
