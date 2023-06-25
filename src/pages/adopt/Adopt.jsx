@@ -23,7 +23,7 @@ const Adopt = ({ navigation }) => {
 
         <View style={styles.containerPets}>
           {allPets.map((item, index) => (
-            <TouchableOpacity key={index}>
+            <TouchableOpacity key={index} onPress={item.imagen}>
               <Image
                 source={{ uri: item.imagen }}
                 style={{ width: 200, height: 200 }}
