@@ -57,7 +57,6 @@ const Login = ({ navigation }) => {
           />
         ))}
         <Button name="Ingresar" handPress={handleLogin} />
-        {/* <Button title="Ingresar" onPress={handleLogin} /> */}
       </View>
       <Text style={styles.text_h2}>Ó</Text>
       <TouchableOpacity

@@ -23,11 +23,12 @@ const Adopt = ({ navigation }) => {
 
         <View style={styles.containerPets}>
           {allPets.map((item, index) => (
-            <Image
-              source={{ uri: item.imagen }}
-              key={index}
-              style={{ width: 200, height: 200 }}
-            />
+            <TouchableOpacity key={index}>
+              <Image
+                source={{ uri: item.imagen }}
+                style={{ width: 200, height: 200 }}
+              />
+            </TouchableOpacity>
           ))}
         </View>
         <Button name="Añade una mascota" nav="AddPet" navigation={navigation} />

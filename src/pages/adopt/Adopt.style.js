@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
     color: "#f85f6a",
   },
   containerPets:{
-    
+    display:"flex",
+    gap: 20,
   }
 });
 

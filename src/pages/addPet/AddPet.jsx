@@ -1,12 +1,12 @@
 import { View, Text, ScrollView, SafeAreaView, Image } from "react-native";
-import { Input, Button } from "../../components";
-import styles from "./AddPet.style";
-import { addPetsCollection } from "../../services/firebaseCollections/firebaseCollectionsPet";
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 
 // nosotros
 import { uploadFile } from "../../services/firestoreService";
+import { Input, Button } from "../../components";
+import { addPetsCollection } from "../../services/firebaseCollections/firebaseCollectionsPet";
+import styles from "./AddPet.style";
 
 const data = [
   {
@@ -76,15 +76,10 @@ const AddPet = () => {
   const handleImageUpload = async () => {
     try {
       const url = await uploadImageFile();
-      setSendPets((prevSendPets) => {
-        return {
-          ...prevSendPets,
-          image: url,
-        };
-      });
+      return url;
     } catch (error) {
-      // Manejar el error si ocurre
       console.error("Error uploading image file:", error);
+      throw error;
     }
   };
 
@@ -99,10 +94,17 @@ const AddPet = () => {
       throw new Error("Error uploading image file:", error);
     }
   };
-  const submitContentAll = ( )=>{
-    handleImageUpload()
-    addPetsCollection(sendPets)
-  }
+  const submitContentAll = async () => {
+    try {
+      const imageUrl = await handleImageUpload();
+      const updatedSendPets = { ...sendPets, imagen: imageUrl };
+      addPetsCollection(updatedSendPets);
+    } catch (error) {
+      // Manejar el error si ocurre
+      console.error("Error submitting content:", error);
+    }
+  };
+
   console.log(sendPets);
 
   return (
@@ -130,7 +132,7 @@ const AddPet = () => {
             gap: 20,
           }}
         >
-          <Button name="Selecciona una imagen" handPress={pickImage } />
+          <Button name="Selecciona una imagen" handPress={pickImage} />
           <View style={styles.box_image}>
             {image && (
               <Image
@@ -139,7 +141,7 @@ const AddPet = () => {
               />
             )}
           </View>
-          <Button name="Subir mascota" handPress={submitContentAll }/>
+          <Button name="Subir mascota" handPress={submitContentAll} />
         </View>
       </ScrollView>
     </SafeAreaView>
